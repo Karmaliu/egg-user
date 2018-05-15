@@ -8,10 +8,19 @@ module.exports = (appInfo) => {
 
 	// add your config here
 	config.middleware = [];
+	//web安全csrf
 	config.security = {
-		domainWhiteList: [ 'http://localhost:8000' ]
+		csrf: {
+			enable: false,
+			ignoreJSON: true
+		},
+		// // 白名单
+		// domainWhiteList: ['http://127.0.0.1:8000/']
 	};
-	// config/config.${env}.js
+	config.cors = {
+		enable: true,
+		package: 'egg-cors',
+	};
 	config.mysql = {
 		// 单数据库信息配置
 		client: {
@@ -33,3 +42,5 @@ module.exports = (appInfo) => {
 	};
 	return config;
 };
+
+
