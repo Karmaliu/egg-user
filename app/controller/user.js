@@ -7,10 +7,10 @@ class UserController extends Controller {
     const { ctx, service } = this;
     const funName = ctx.params.funName;
     let concent = '404';
-    const { userId } = ctx.query;
+    const { userId, name } = ctx.query;
     if (funName == 'userQuery') {
-      // 查询用户
-      concent = await service.user.query(userId);
+      //用户查询
+      concent = await service.user.query(name);
     } else if (funName == 'userDelete') {
       //删除用户
       concent = await service.user.delete(userId);
@@ -21,15 +21,15 @@ class UserController extends Controller {
     const { ctx, service } = this;
     const postFunName = ctx.params.postFunName;
     const userData = ctx.request.body;
-    const concent ='404';
-    if(postFunName =='userCreate'){
+    if (postFunName == 'userCreate') {
       //创建用户
-      concent = await service.user.create(userData);
-    }else if(postFunName == 'userUpdate'){
+      const concentCreate = await service.user.create(userData);
+      ctx.body = concentCreate;
+    } else if (postFunName == 'userUpdate') {
       //修改用户
-      concent = await service.user.update(userData);
+      const concentUpdate = await service.user.update(userData);
+      ctx.body = concentUpdate;
     }
-    ctx.body =concent;
   }
 }
 

@@ -1,13 +1,13 @@
 
 const Service = require('egg').Service;
 class UserService extends Service {
-  async query(userId) {
+  async query(name) {
     let results = {};
-    if (userId == null) {
-      results = await this.app.mysql.select('userdata', { userId: userId });
-    } else {
-      results = await this.app.mysql.get('userdata', { userId: userId });
-    }
+     if(name){
+       results = await this.app.mysql.select('userdata', { where:{name:name} });
+     }else{
+        results =await this.app.mysql.select('userdata');
+     }
     return { results };
   }
   async delete(userId) {
@@ -22,6 +22,7 @@ class UserService extends Service {
     const results = {
       status: 0,
     }
+    return { results };
   }
   async update(userData) {
     const { userId ,name,age,address} =userData;
@@ -36,10 +37,14 @@ class UserService extends Service {
         userId
       }
     };
-    await this.app.mysql.update('userdata', row, options);
-    const results = {
+    const result = await this.app.mysql.update('userdata', row, options);
+    const updateSuccess = result.affectedRows === 1;
+    const results ={
       status: 0,
-    };
+    }
+    if(updateSuccess){
+      return {results}
+    }
   }
 }
 
