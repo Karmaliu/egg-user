@@ -3,11 +3,12 @@ const Service = require('egg').Service;
 class UserService extends Service {
   async query(name) {
     let results = {};
-     if(name){
-       results = await this.app.mysql.select('userdata', { where:{name:name} });
-     }else{
-        results =await this.app.mysql.select('userdata');
-     }
+    if (name === 'empty') {
+      results = await this.app.mysql.select('userdata');
+    } else {
+      const sql = "select * from userdata where name like ?;";
+      results = await this.app.mysql.query(sql, ['%' + name + '%'], function(err, row){});
+    }
     return { results };
   }
   async delete(userId) {
@@ -25,7 +26,7 @@ class UserService extends Service {
     return { results };
   }
   async update(userData) {
-    const { userId ,name,age,address} =userData;
+    const { userId, name, age, address } = userData;
     const row = {
       name,
       age,
@@ -39,11 +40,11 @@ class UserService extends Service {
     };
     const result = await this.app.mysql.update('userdata', row, options);
     const updateSuccess = result.affectedRows === 1;
-    const results ={
+    const results = {
       status: 0,
     }
-    if(updateSuccess){
-      return {results}
+    if (updateSuccess) {
+      return { results }
     }
   }
 }
